@@ -10,7 +10,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 @Singleton
 public class DogPaginationRepositoryImpl implements DogPaginationRepository {
@@ -56,15 +55,15 @@ public class DogPaginationRepositoryImpl implements DogPaginationRepository {
             predicatesList.add((criteriaBuilder.isFalse(root.get("deleted"))));
         }
 
-        if (Objects.nonNull(filter)) {
-            if (!filter.name().trim().isEmpty()) {
+        if (filter != null) {
+            if (containsText(filter.name())) {
                 predicatesList.add(dogsLike(criteriaBuilder, root.get("name"), filter.name()));
             }
-            if (!filter.breed().trim().isEmpty()) {
-                predicatesList.add(dogsLike(criteriaBuilder, root.get("breed"), filter.name()));
+            if (containsText(filter.breed())) {
+                predicatesList.add(dogsLike(criteriaBuilder, root.get("breed"), filter.breed()));
             }
-            if (!filter.supplier().trim().isEmpty()) {
-                predicatesList.add(dogsLike(criteriaBuilder, root.get("supplier"), filter.name()));
+            if (containsText(filter.supplier())) {
+                predicatesList.add(dogsLike(criteriaBuilder, root.get("supplier"), filter.supplier()));
             }
         }
         return predicatesList;
@@ -72,5 +71,9 @@ public class DogPaginationRepositoryImpl implements DogPaginationRepository {
 
     private Predicate dogsLike(CriteriaBuilder criteriaBuilder, Path<String> field, String pattern) {
         return criteriaBuilder.like(criteriaBuilder.lower(field), "%" + pattern.toLowerCase() + "%");
+    }
+
+    private boolean containsText(String s) {
+        return s != null && !s.trim().isEmpty();
     }
 }

@@ -173,6 +173,10 @@ public class Dog {
         return deletedAt;
     }
 
+    public void setDeletedAt(Instant deletedAt) {
+            this.deletedAt = deletedAt;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
