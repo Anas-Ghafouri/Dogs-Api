@@ -51,7 +51,7 @@ public class DogService {
     }
 
     @Transactional
-    public void softDeleteDog(Long id) {
+    public void deleteDog(Long id) {
         Dog dog = getActiveDog(id);
         dog.setDeleted(true);
         dog.setDeletedAt(Instant.now());
