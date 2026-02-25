@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum LeavingReason {
+public enum LeavingReason implements Labeled {
 
     TRANSFERRED("Transferred"),
     RETIRED_PUT_DOWN("Retired (Put Down)"),
@@ -15,6 +15,7 @@ public enum LeavingReason {
         this.label = label;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }

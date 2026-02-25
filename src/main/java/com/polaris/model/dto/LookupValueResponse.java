@@ -1,6 +1,6 @@
 package com.polaris.model.dto;
 
-public record EnumOption(
+public record LookupValueResponse(
         String label,
         String value
 ) {}

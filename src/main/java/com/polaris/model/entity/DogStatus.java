@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum DogStatus {
+public enum DogStatus implements Labeled {
     IN_TRAINING("In Training"),
     IN_SERVICE("In Service"),
     RETIRED("Retired"),
@@ -12,6 +12,7 @@ public enum DogStatus {
         this.label = label;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }

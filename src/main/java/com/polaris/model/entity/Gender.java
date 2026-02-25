@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum Gender {
+public enum Gender implements Labeled {
     MALE("male"),
     FEMALE("female"),
     UNKNOWN("unknown");
@@ -11,6 +11,7 @@ public enum Gender {
         this.label = label;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
