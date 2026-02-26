@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum LeavingReason implements Labeled {
+public enum DogLeavingReason implements Labeled {
 
     TRANSFERRED("Transferred"),
     RETIRED_PUT_DOWN("Retired (Put Down)"),
@@ -11,7 +11,7 @@ public enum LeavingReason implements Labeled {
 
     private final String label;
 
-    LeavingReason(String label) {
+    DogLeavingReason(String label) {
         this.label = label;
     }
 

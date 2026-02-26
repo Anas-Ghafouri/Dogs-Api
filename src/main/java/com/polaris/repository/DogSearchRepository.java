@@ -5,6 +5,6 @@ import com.polaris.model.entity.Dog;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 
-public interface DogPaginationRepository {
-    Page<Dog> search(DogFilter filer, boolean includeDeleted, Pageable pageable);
+public interface DogSearchRepository {
+    Page<Dog> search(DogFilter filter, boolean includeDeleted, Pageable pageable);
 }

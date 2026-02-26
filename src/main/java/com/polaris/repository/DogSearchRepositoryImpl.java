@@ -12,11 +12,11 @@ import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 
 @Singleton
-public class DogPaginationRepositoryImpl implements DogPaginationRepository {
+public class DogSearchRepositoryImpl implements DogSearchRepository {
 
     private final EntityManager entityManager;
 
-    public DogPaginationRepositoryImpl(EntityManager entityManager) {
+    public DogSearchRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

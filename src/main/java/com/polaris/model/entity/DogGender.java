@@ -1,13 +1,13 @@
 package com.polaris.model.entity;
 
-public enum Gender implements Labeled {
+public enum DogGender implements Labeled {
     MALE("male"),
     FEMALE("female"),
     UNKNOWN("unknown");
 
     private final String label;
 
-    Gender(String label) {
+    DogGender(String label) {
         this.label = label;
     }
 

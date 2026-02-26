@@ -1,10 +1,10 @@
 package com.polaris.controller;
 
 import com.polaris.model.dto.LookupValueResponse;
+import com.polaris.model.entity.DogLeavingReason;
 import com.polaris.model.entity.DogStatus;
-import com.polaris.model.entity.Gender;
+import com.polaris.model.entity.DogGender;
 import com.polaris.model.entity.Labeled;
-import com.polaris.model.entity.LeavingReason;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 
@@ -21,12 +21,12 @@ public class DogLookupController {
 
     @Get("/genders")
     public List<LookupValueResponse> genders() {
-        return toLookupResponse(Gender.values());
+        return toLookupResponse(DogGender.values());
     }
 
     @Get("/leaving-reasons")
     public List<LookupValueResponse> leavingReasons() {
-        return toLookupResponse(LeavingReason.values());
+        return toLookupResponse(DogLeavingReason.values());
     }
 
     private <E extends Enum<E> & Labeled> List<LookupValueResponse> toLookupResponse(E[] values) {

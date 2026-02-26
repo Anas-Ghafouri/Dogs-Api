@@ -24,6 +24,8 @@ dependencies {
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("jakarta.validation:jakarta.validation-api")
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+    annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.flywaydb:flyway-database-postgresql")

@@ -23,7 +23,8 @@ public class Dog {
         private String badgeId;
 
         @Enumerated(EnumType.STRING)
-        private Gender gender;
+        @Column(name = "gender")
+        private DogGender dogGender;
 
         @Column(name = "birth_date")
         private LocalDate birthDate;
@@ -40,7 +41,7 @@ public class Dog {
 
         @Enumerated(EnumType.STRING)
         @Column(name = "leaving_reason")
-        private LeavingReason leavingReason;
+        private DogLeavingReason dogLeavingReason;
 
         @Column(name = "kennelling_characteristic")
         private String kennellingCharacteristic;
@@ -105,12 +106,12 @@ public class Dog {
         this.badgeId = badgeId;
     }
 
-    public Gender getGender() {
-        return gender;
+    public DogGender getGender() {
+        return dogGender;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setGender(DogGender dogGender) {
+        this.dogGender = dogGender;
     }
 
     public LocalDate getBirthDate() {
@@ -145,12 +146,12 @@ public class Dog {
         this.leavingDate = leavingDate;
     }
 
-    public LeavingReason getLeavingReason() {
-        return leavingReason;
+    public DogLeavingReason getLeavingReason() {
+        return dogLeavingReason;
     }
 
-    public void setLeavingReason(LeavingReason leavingReason) {
-        this.leavingReason = leavingReason;
+    public void setLeavingReason(DogLeavingReason dogLeavingReason) {
+        this.dogLeavingReason = dogLeavingReason;
     }
 
     public String getKennellingCharacteristic() {
