@@ -10,6 +10,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class DogSearchRepositoryImpl implements DogSearchRepository {
@@ -46,8 +47,8 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
         return Page.of(results, pageable, total);
     }
 
-    private ArrayList<Predicate> buildPredicates(DogFilter filter, boolean includeDeleted, CriteriaBuilder criteriaBuilder,
-                                                 Root<Dog> root) {
+    private List<Predicate> buildPredicates(DogFilter filter, boolean includeDeleted, CriteriaBuilder criteriaBuilder,
+                                            Root<Dog> root) {
 
         var predicatesList = new ArrayList<Predicate>();
 

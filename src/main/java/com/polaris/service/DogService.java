@@ -8,6 +8,7 @@ import com.polaris.repository.DogSearchRepository;
 import com.polaris.repository.DogRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
+import io.micronaut.transaction.annotation.ReadOnly;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
@@ -33,7 +34,7 @@ public class DogService {
         return dogRepository.save(dog);
     }
 
-    @Transactional
+    @ReadOnly
     public Page<Dog> listDogs(Pageable pageable, DogFilter dogFilter, boolean includeDeleted) {
         if ((dogFilter == null || (isBlank(dogFilter.name()) && isBlank(dogFilter.breed())
                 && isBlank(dogFilter.supplier()))) && !includeDeleted) {
@@ -42,6 +43,7 @@ public class DogService {
         return dogSearchRepository.search(dogFilter, includeDeleted, pageable);
     }
 
+    @ReadOnly
     public Dog getActiveDog(Long id) {
         return dogRepository.findByIdAndDeletedFalse(id).orElseThrow( () ->
                 new NoSuchElementException("Dog not found: " + id));

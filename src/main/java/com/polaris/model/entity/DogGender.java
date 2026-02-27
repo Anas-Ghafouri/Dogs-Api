@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum DogGender implements Labeled {
+public enum DogGender implements HasLabel {
     MALE("male"),
     FEMALE("female"),
     UNKNOWN("unknown");

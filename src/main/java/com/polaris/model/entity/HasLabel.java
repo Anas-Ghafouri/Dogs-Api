@@ -1,5 +1,5 @@
 package com.polaris.model.entity;
 
-public interface Labeled {
+public interface HasLabel {
     String getLabel();
 }

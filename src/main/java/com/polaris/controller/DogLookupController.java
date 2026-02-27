@@ -4,7 +4,7 @@ import com.polaris.model.dto.LookupValueResponse;
 import com.polaris.model.entity.DogLeavingReason;
 import com.polaris.model.entity.DogStatus;
 import com.polaris.model.entity.DogGender;
-import com.polaris.model.entity.Labeled;
+import com.polaris.model.entity.HasLabel;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 
@@ -29,7 +29,7 @@ public class DogLookupController {
         return toLookupResponse(DogLeavingReason.values());
     }
 
-    private <E extends Enum<E> & Labeled> List<LookupValueResponse> toLookupResponse(E[] values) {
+    private <E extends Enum<E> & HasLabel> List<LookupValueResponse> toLookupResponse(E[] values) {
         return Arrays.stream(values)
                 .map(value -> new LookupValueResponse(value.getLabel(), value.name()))
                 .toList();

@@ -1,6 +1,6 @@
 package com.polaris.model.entity;
 
-public enum DogStatus implements Labeled {
+public enum DogStatus implements HasLabel {
     IN_TRAINING("In Training"),
     IN_SERVICE("In Service"),
     RETIRED("Retired"),
