@@ -32,6 +32,8 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     testImplementation("io.micronaut:micronaut-http-client")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.+" )
+    testImplementation("org.mockito:mockito-junit-jupiter:5.+")
 }
 
 

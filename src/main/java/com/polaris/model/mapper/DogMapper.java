@@ -3,8 +3,12 @@ package com.polaris.model.mapper;
 import com.polaris.model.dto.DogRequest;
 import com.polaris.model.dto.DogResponse;
 import com.polaris.model.entity.Dog;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.*;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
 
 @Mapper(componentModel = "jsr330")
 public interface DogMapper {

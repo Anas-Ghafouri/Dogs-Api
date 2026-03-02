@@ -7,7 +7,11 @@ import io.micronaut.data.model.Pageable;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,29 +56,38 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
 
         var predicatesList = new ArrayList<Predicate>();
 
+        applySoftDeleteFilter(includeDeleted, criteriaBuilder, root, predicatesList);
+        applyStringFilters(filter, criteriaBuilder, root, predicatesList);
+
+        return predicatesList;
+    }
+
+    private void applySoftDeleteFilter(boolean includeDeleted,
+                                       CriteriaBuilder cb,
+                                       Root<Dog> root,
+                                       List<Predicate> predicates) {
         if (!includeDeleted) {
-            predicatesList.add((criteriaBuilder.isFalse(root.get("deleted"))));
+            predicates.add(cb.isFalse(root.get("deleted")));
+        }
+    }
+
+    private void applyStringFilters(DogFilter dogFilter,
+                                    CriteriaBuilder cb,
+                                    Root<Dog> root,
+                                    List<Predicate> predicates) {
+        if (dogFilter == null || dogFilter.hasNoFilters()) {
+            return;
         }
 
-        if (filter != null) {
-            if (containsText(filter.name())) {
-                predicatesList.add(dogsLike(criteriaBuilder, root.get("name"), filter.name()));
+        dogFilter.stringFilters().forEach((key, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return;
             }
-            if (containsText(filter.breed())) {
-                predicatesList.add(dogsLike(criteriaBuilder, root.get("breed"), filter.breed()));
-            }
-            if (containsText(filter.supplier())) {
-                predicatesList.add(dogsLike(criteriaBuilder, root.get("supplier"), filter.supplier()));
-            }
-        }
-        return predicatesList;
+            predicates.add(dogsLike(cb, root.get(key), value));
+        });
     }
 
     private Predicate dogsLike(CriteriaBuilder criteriaBuilder, Path<String> field, String pattern) {
         return criteriaBuilder.like(criteriaBuilder.lower(field), "%" + pattern.toLowerCase() + "%");
-    }
-
-    private boolean containsText(String s) {
-        return s != null && !s.trim().isEmpty();
     }
 }

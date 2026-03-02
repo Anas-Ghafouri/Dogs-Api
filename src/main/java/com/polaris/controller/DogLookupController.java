@@ -1,17 +1,14 @@
 package com.polaris.controller;
 
 import com.polaris.model.dto.LookupValueResponse;
-import com.polaris.model.entity.DogLeavingReason;
-import com.polaris.model.entity.DogStatus;
-import com.polaris.model.entity.DogGender;
-import com.polaris.model.entity.HasLabel;
+import com.polaris.model.entity.*;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Controller("/api/dogs/lookups")
+@Controller(DogController.API_BASE + "/lookups")
 public class DogLookupController {
 
     @Get("/statuses")

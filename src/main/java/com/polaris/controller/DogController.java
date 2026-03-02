@@ -10,14 +10,18 @@ import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.annotation.*;
+
 import jakarta.validation.Valid;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Put;
+import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Status;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-@Controller("/api/dogs")
+@Controller(DogController.API_BASE)
 public class DogController {
 
     private final DogService dogService;
@@ -28,14 +32,15 @@ public class DogController {
         this.dogMapper = dogMapper;
     }
 
+    public static final String API_BASE = "/api/dogs";
+
     @Get("/dogs")
     public Page<DogResponse> listDogs(@QueryValue @Nullable String filter,
                                       @QueryValue(defaultValue = "false") boolean includeDeleted,
                                       Pageable pageable) {
 
-        DogFilter dogFilter = (filter != null && !filter.isBlank())
-                ? mapToDogFilter(parseFilter(filter))
-                : null;
+        DogFilter dogFilter = DogFilter.from(filter);
+
         return dogService.listDogs(pageable, dogFilter, includeDeleted)
                  .map(dogMapper::entityToResponse);
     }
@@ -67,27 +72,4 @@ public class DogController {
 
         dogService.deleteDog(id);
     }
-
-    private DogFilter mapToDogFilter(Map<String, String> paramValues) {
-
-        return new DogFilter(
-                paramValues.get("name"),
-                paramValues.get("breed"),
-                paramValues.get("supplier")
-        );
-    }
-
-    private Map<String, String> parseFilter(String filter) {
-
-        return Arrays.stream(filter.split(","))
-                .map(String::trim)
-                .map(str -> str.split(":", 2))
-                .filter(entry -> entry.length == 2)
-                .collect(Collectors.toMap(
-                        entry -> entry[0].trim().toLowerCase(),
-                        entry -> entry[1].trim()
-                ));
-
-    }
-
 }

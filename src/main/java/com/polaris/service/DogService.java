@@ -13,6 +13,7 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Singleton
@@ -36,8 +37,7 @@ public class DogService {
 
     @ReadOnly
     public Page<Dog> listDogs(Pageable pageable, DogFilter dogFilter, boolean includeDeleted) {
-        if ((dogFilter == null || (isBlank(dogFilter.name()) && isBlank(dogFilter.breed())
-                && isBlank(dogFilter.supplier()))) && !includeDeleted) {
+        if ((dogFilter == null || dogFilter.hasNoFilters()) && !includeDeleted) {
             return dogRepository.findAllByDeletedFalse(pageable);
         }
         return dogSearchRepository.search(dogFilter, includeDeleted, pageable);
@@ -64,7 +64,4 @@ public class DogService {
         dogRepository.update(dog);
     }
 
-    private boolean isBlank(String s) {
-        return s == null || s.trim().isEmpty();
-    }
 }
