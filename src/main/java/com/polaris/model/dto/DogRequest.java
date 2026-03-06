@@ -14,11 +14,11 @@ public record DogRequest(
          String breed,
          String supplier,
          String badgeId,
-         DogGender dogGender,
+         DogGender gender,
          LocalDate birthDate,
          LocalDate dateAcquired,
          DogStatus currentStatus,
          LocalDate leavingDate,
-         DogLeavingReason dogLeavingReason,
+         DogLeavingReason leavingReason,
          String kennellingCharacteristic) {
 }

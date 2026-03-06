@@ -14,7 +14,7 @@ class DogsApiTest {
     EmbeddedApplication<?> application;
 
     @Test
-    void testItWorks() {
+    void testApplicationStarts() {
         Assertions.assertTrue(application.isRunning());
     }
 

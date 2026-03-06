@@ -1,6 +1,6 @@
 package com.polaris.controller;
 
-import com.polaris.model.dto.LookupValueResponse;
+import com.polaris.model.dto.LookupResponse;
 import com.polaris.model.entity.*;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -12,23 +12,23 @@ import java.util.List;
 public class DogLookupController {
 
     @Get("/statuses")
-    public List<LookupValueResponse> statuses() {
+    public List<LookupResponse> statuses() {
         return toLookupResponse(DogStatus.values());
     }
 
     @Get("/genders")
-    public List<LookupValueResponse> genders() {
+    public List<LookupResponse> genders() {
         return toLookupResponse(DogGender.values());
     }
 
     @Get("/leaving-reasons")
-    public List<LookupValueResponse> leavingReasons() {
+    public List<LookupResponse> leavingReasons() {
         return toLookupResponse(DogLeavingReason.values());
     }
 
-    private <E extends Enum<E> & HasLabel> List<LookupValueResponse> toLookupResponse(E[] values) {
+    private <E extends Enum<E> & HasLabel> List<LookupResponse> toLookupResponse(E[] values) {
         return Arrays.stream(values)
-                .map(value -> new LookupValueResponse(value.getLabel(), value.name()))
+                .map(value -> new LookupResponse(value.getLabel(), value.name()))
                 .toList();
     }
 }

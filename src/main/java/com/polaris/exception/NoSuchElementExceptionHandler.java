@@ -1,4 +1,4 @@
-package com.polaris.error;
+package com.polaris.exception;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;

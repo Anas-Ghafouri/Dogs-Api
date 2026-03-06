@@ -10,7 +10,7 @@ public record DogFilter(
         Map<String, String> stringFilters
 ) {
 
-    private static final Set<String> ALLOWED_STRING_FILTERS = Set.of(
+    private static final Set<String> STRING_FILTERS = Set.of(
             "name",
             "breed",
             "supplier"
@@ -45,7 +45,7 @@ public record DogFilter(
         Map<String, String> authorisedFilters = new HashMap<>();
 
         parsedFilters.forEach((key, value) -> {
-            if (value != null && !value.isBlank() && ALLOWED_STRING_FILTERS.contains(key)) {
+            if (value != null && !value.isBlank() && STRING_FILTERS.contains(key)) {
                 authorisedFilters.put(key, value.trim());
             }
         });
@@ -53,6 +53,7 @@ public record DogFilter(
     }
 
     public boolean hasNoFilters() {
-        return stringFilters == null || stringFilters.isEmpty();
+        if (stringFilters == null || stringFilters.isEmpty()) return true;
+        return stringFilters.values().stream().allMatch(v -> v == null || v.isBlank());
     }
 }

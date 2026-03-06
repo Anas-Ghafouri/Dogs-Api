@@ -56,16 +56,16 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
 
         var predicatesList = new ArrayList<Predicate>();
 
-        applySoftDeleteFilter(includeDeleted, criteriaBuilder, root, predicatesList);
+        applyDeleteFilter(includeDeleted, criteriaBuilder, root, predicatesList);
         applyStringFilters(filter, criteriaBuilder, root, predicatesList);
 
         return predicatesList;
     }
 
-    private void applySoftDeleteFilter(boolean includeDeleted,
-                                       CriteriaBuilder cb,
-                                       Root<Dog> root,
-                                       List<Predicate> predicates) {
+    private void applyDeleteFilter(boolean includeDeleted,
+                                   CriteriaBuilder cb,
+                                   Root<Dog> root,
+                                   List<Predicate> predicates) {
         if (!includeDeleted) {
             predicates.add(cb.isFalse(root.get("deleted")));
         }

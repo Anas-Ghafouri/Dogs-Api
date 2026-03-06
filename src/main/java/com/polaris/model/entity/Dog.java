@@ -33,7 +33,7 @@ public class Dog {
 
         @Enumerated(EnumType.STRING)
         @Column(name = "gender")
-        private DogGender dogGender;
+        private DogGender gender;
 
         @Column(name = "birth_date")
         private LocalDate birthDate;
@@ -50,7 +50,7 @@ public class Dog {
 
         @Enumerated(EnumType.STRING)
         @Column(name = "leaving_reason")
-        private DogLeavingReason dogLeavingReason;
+        private DogLeavingReason leavingReason;
 
         @Column(name = "kennelling_characteristic")
         private String kennellingCharacteristic;
@@ -116,11 +116,11 @@ public class Dog {
     }
 
     public DogGender getGender() {
-        return dogGender;
+        return gender;
     }
 
     public void setGender(DogGender dogGender) {
-        this.dogGender = dogGender;
+        this.gender = dogGender;
     }
 
     public LocalDate getBirthDate() {
@@ -156,11 +156,11 @@ public class Dog {
     }
 
     public DogLeavingReason getLeavingReason() {
-        return dogLeavingReason;
+        return leavingReason;
     }
 
     public void setLeavingReason(DogLeavingReason dogLeavingReason) {
-        this.dogLeavingReason = dogLeavingReason;
+        this.leavingReason = dogLeavingReason;
     }
 
     public String getKennellingCharacteristic() {
