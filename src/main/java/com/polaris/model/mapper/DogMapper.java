@@ -15,7 +15,6 @@ public interface DogMapper {
 
     DogResponse entityToResponse(Dog entity);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
     void updateEntityFromRequest(DogRequest request, @MappingTarget Dog dog);

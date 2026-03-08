@@ -1,5 +1,6 @@
 package com.polaris.service;
 
+import com.polaris.exception.DogNotFoundException;
 import com.polaris.model.dto.DogFilter;
 import com.polaris.model.dto.DogRequest;
 import com.polaris.model.entity.Dog;
@@ -149,10 +150,10 @@ public class DogServiceTest {
     void getActiveDog_throwsExceptionWhenNotFound() {
         when(dogRepository.findByIdAndDeletedFalse(15L)).thenReturn(Optional.empty());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+        DogNotFoundException exception = assertThrows(DogNotFoundException.class,
                 () -> dogService.getActiveDog(15L));
 
-        assertTrue(exception.getMessage().contains("Dog not found: 15"));
+        assertEquals("Dog not found: 15", exception.getMessage());
 
     }
 

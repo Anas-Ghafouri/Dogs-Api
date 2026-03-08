@@ -10,11 +10,11 @@ import jakarta.inject.Singleton;
 import java.util.NoSuchElementException;
 
 @Singleton
-public class NoSuchElementExceptionHandler implements ExceptionHandler<NoSuchElementException, HttpResponse<?>> {
+public class DogNotFoundExceptionHandler implements ExceptionHandler<DogNotFoundException, HttpResponse<?>> {
 
 
     @Override
-    public HttpResponse<?> handle(HttpRequest request, NoSuchElementException exception) {
+    public HttpResponse<?> handle(HttpRequest request, DogNotFoundException exception) {
         return HttpResponse.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("Dog not found", exception.getMessage()));
     }

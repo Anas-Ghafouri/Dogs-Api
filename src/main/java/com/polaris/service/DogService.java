@@ -1,5 +1,6 @@
 package com.polaris.service;
 
+import com.polaris.exception.DogNotFoundException;
 import com.polaris.model.dto.DogFilter;
 import com.polaris.model.dto.DogRequest;
 import com.polaris.model.entity.Dog;
@@ -49,7 +50,7 @@ public class DogService {
     @ReadOnly
     public Dog getActiveDog(Long id) {
         return dogRepository.findByIdAndDeletedFalse(id).orElseThrow( () ->
-                new NoSuchElementException("Dog not found: " + id));
+                new DogNotFoundException(id));
     }
 
     @Transactional

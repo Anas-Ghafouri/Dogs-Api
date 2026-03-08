@@ -10,7 +10,7 @@ public record DogFilter(
         Map<String, String> stringFilters
 ) {
 
-    private static final Set<String> STRING_FILTERS = Set.of(
+    private static final Set<String> FILTERABLE_STRING_FIELDS = Set.of(
             "name",
             "breed",
             "supplier"
@@ -45,7 +45,7 @@ public record DogFilter(
         Map<String, String> authorisedFilters = new HashMap<>();
 
         parsedFilters.forEach((key, value) -> {
-            if (value != null && !value.isBlank() && STRING_FILTERS.contains(key)) {
+            if (value != null && !value.isBlank() && FILTERABLE_STRING_FIELDS.contains(key)) {
                 authorisedFilters.put(key, value.trim());
             }
         });

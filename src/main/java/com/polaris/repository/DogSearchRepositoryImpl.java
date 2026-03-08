@@ -7,14 +7,11 @@ import io.micronaut.data.model.Pageable;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Singleton
 public class DogSearchRepositoryImpl implements DogSearchRepository {
@@ -36,10 +33,12 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
         var predicates = buildPredicates(filter, includeDeleted, criteriaBuilder, root);
         criteriaQuery.where(predicates.toArray(Predicate[]::new));
 
-        TypedQuery<Dog> entityManagerQuery = entityManager.createQuery(criteriaQuery);
-        entityManagerQuery.setFirstResult((int) pageable.getOffset());
-        entityManagerQuery.setMaxResults(pageable.getSize());
-        var results = entityManagerQuery.getResultList();
+        applySorting(pageable, criteriaBuilder, criteriaQuery, root);
+
+        TypedQuery<Dog> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getSize());
+        var results = typedQuery.getResultList();
 
         CriteriaQuery<Long> criteriaCountQuery = criteriaBuilder.createQuery(Long.class);
         Root<Dog> countRoot = criteriaCountQuery.from(Dog.class);
@@ -49,6 +48,10 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
         Long total = entityManager.createQuery(criteriaCountQuery).getSingleResult();
 
         return Page.of(results, pageable, total);
+    }
+
+    private Predicate dogsLike(CriteriaBuilder criteriaBuilder, Path<String> field, String pattern) {
+        return criteriaBuilder.like(criteriaBuilder.lower(field), "%" + pattern.toLowerCase(Locale.ROOT) + "%");
     }
 
     private List<Predicate> buildPredicates(DogFilter filter, boolean includeDeleted, CriteriaBuilder criteriaBuilder,
@@ -87,7 +90,20 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
         });
     }
 
-    private Predicate dogsLike(CriteriaBuilder criteriaBuilder, Path<String> field, String pattern) {
-        return criteriaBuilder.like(criteriaBuilder.lower(field), "%" + pattern.toLowerCase() + "%");
+    private void applySorting(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<Dog> cq, Root<Dog> root) {
+        var sort = pageable.getSort();
+
+        if (sort == null || sort.getOrderBy().isEmpty()) {
+            return;
+        }
+
+        var orders = new ArrayList<Order>();
+
+        sort.getOrderBy().forEach(order -> {
+            Path<Object> path = root.get(order.getProperty());
+            orders.add(order.isAscending() ? cb.asc(path) : cb.desc(path));
+        });
+
+        cq.orderBy(orders);
     }
 }
