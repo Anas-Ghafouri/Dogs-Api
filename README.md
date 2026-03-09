@@ -409,22 +409,6 @@ Invalid requests (for example malformed parameters or invalid input) will result
 
 # Future Enhancements
 
-- Sort capability for dog search
-- Advanced search filters including date ranges
-- OpenAPI documentation
-- Replace the embedded H2 database with a production database such as PostgreSQL
-- Database indexing for improved query performance
-
-•	Sorting support for search results
-Allow clients to specify sorting parameters (e.g. sort=name,asc) when retrieving dog records.
-•	Advanced filtering capabilities
-Extend the current filtering system to support more complex queries such as:
-•	date range filtering (e.g. birthDate, dateAcquired)
-•	multi-field filters
-•	combination filters using logical operators.
-
-## Future Enhancements
-
 The following improvements could further enhance the system’s functionality, scalability, and maintainability.
 
 ### API Features
@@ -439,7 +423,7 @@ The following improvements could further enhance the system’s functionality, s
 
 ### Documentation
 
-- **OpenAPI / Swagger documentation**  
+- **OpenAPI documentation**  
   Add automated API documentation using OpenAPI to provide interactive endpoint exploration and improve developer experience.
 
 ### Infrastructure
