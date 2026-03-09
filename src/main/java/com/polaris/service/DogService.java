@@ -5,8 +5,8 @@ import com.polaris.model.dto.DogFilter;
 import com.polaris.model.dto.DogRequest;
 import com.polaris.model.entity.Dog;
 import com.polaris.model.mapper.DogMapper;
-import com.polaris.repository.DogSearchRepository;
 import com.polaris.repository.DogRepository;
+import com.polaris.repository.DogSearchRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.transaction.annotation.ReadOnly;
@@ -14,7 +14,6 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
 import java.time.Instant;
-import java.util.NoSuchElementException;
 
 @Singleton
 public class DogService {
@@ -49,8 +48,8 @@ public class DogService {
 
     @ReadOnly
     public Dog getActiveDog(Long id) {
-        return dogRepository.findByIdAndDeletedFalse(id).orElseThrow( () ->
-                new DogNotFoundException(id));
+        return dogRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new DogNotFoundException(id));
     }
 
     @Transactional

@@ -3,7 +3,7 @@ package com.polaris.model.dto;
 import io.micronaut.serde.annotation.Serdeable;
 
 @Serdeable
-public record LookupResponse(
+public record DogLookupResponse(
         String label,
         String value
 ) {}

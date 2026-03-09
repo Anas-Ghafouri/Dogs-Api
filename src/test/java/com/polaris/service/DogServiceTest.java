@@ -2,6 +2,7 @@ package com.polaris.service;
 
 import com.polaris.exception.DogNotFoundException;
 import com.polaris.model.dto.DogFilter;
+import com.polaris.model.dto.DogQueryField;
 import com.polaris.model.dto.DogRequest;
 import com.polaris.model.entity.Dog;
 import com.polaris.model.entity.DogGender;
@@ -21,10 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,17 +53,18 @@ public class DogServiceTest {
     }
 
     @Test
-    void listDogs_nullFilterAndNotIncludeDeletedUsesDogRepository() {
+    void listDogs_emptyFilterAndNotIncludeDeletedUsesDogRepository() {
         Dog dog1 = new Dog();
         dog1.setName("Bob");
         Dog dog2 = new Dog();
         dog2.setName("Andy");
 
         Page<Dog> page = Page.of(List.of(dog1, dog2), pageable, 2L);
+        DogFilter dogFilter = new DogFilter(Map.of());
 
         when(dogRepository.findAllByDeletedFalse(pageable)).thenReturn(page);
 
-        Page<Dog> dogs = dogService.listDogs(pageable, null, false);
+        Page<Dog> dogs = dogService.listDogs(pageable, dogFilter, false);
 
         assertSame(page, dogs);
         verify(dogRepository).findAllByDeletedFalse(pageable);
@@ -74,33 +73,14 @@ public class DogServiceTest {
     }
 
     @Test
-    void listDogs_nullFilterAndIncludeDeletedUsesDogRepository() {
+    void listDogs_emptyFilterAndIncludeDeletedUsesDogRepository() {
         Dog dog1 = new Dog();
         dog1.setName("Bob");
         Dog dog2 = new Dog();
         dog2.setName("Andy");
 
         Page<Dog> page = Page.of(List.of(dog1, dog2), pageable, 2L);
-
-        when(dogRepository.findAll(pageable)).thenReturn(page);
-
-        Page<Dog> dogs = dogService.listDogs(pageable, null, true);
-
-        assertSame(page, dogs);
-        verify(dogRepository).findAll(pageable);
-        verifyNoInteractions(dogSearchRepository);
-
-    }
-
-    @Test
-    void listDogs_BlankFilterAndIncludeDeletedFalseUsesDogRepository() {
-        Dog dog1 = new Dog();
-        dog1.setName("Bob");
-        Dog dog2 = new Dog();
-        dog2.setName("Andy");
-
-        DogFilter dogFilter = new DogFilter(Map.of("name", "", "breed", " ", "supplier", "   "));
-        Page<Dog> page = Page.of(List.of(dog1, dog2), pageable, 2L);
+        DogFilter dogFilter = new DogFilter(Map.of());
 
         when(dogRepository.findAll(pageable)).thenReturn(page);
 
@@ -114,22 +94,25 @@ public class DogServiceTest {
 
     @Test
     void listDogs_withFilterUsesDogSearchRepository() {
-        DogFilter filter = new DogFilter(Map.of("name", "Peter",
-                "breed", "German Shepherd", "supplier", "Charity A"));
+        Map<DogQueryField, String> filters = new EnumMap<>(DogQueryField.class);
+        filters.put(DogQueryField.NAME, "Peter");
+        filters.put(DogQueryField.BREED, "German Shepherd");
+        filters.put(DogQueryField.SUPPLIER, "Charity A");
+        DogFilter dogFilter = new DogFilter(filters);
 
         Dog dog1 = new Dog();
         dog1.setName("Peter");
         dog1.setBreed("German Shepherd");
         dog1.setSupplier("Charity A");
 
-        Page<Dog> page = Page.of(List.of(dog1), pageable, 2L);
+        Page<Dog> page = Page.of(List.of(dog1), pageable, 1L);
 
-        when(dogSearchRepository.search(filter, false, pageable)).thenReturn(page);
+        when(dogSearchRepository.search(dogFilter, false, pageable)).thenReturn(page);
 
-        Page<Dog> result = dogService.listDogs(pageable, filter, false);
+        Page<Dog> result = dogService.listDogs(pageable, dogFilter, false);
 
         assertSame(page, result);
-        verify(dogSearchRepository).search(filter, false, pageable);
+        verify(dogSearchRepository).search(dogFilter, false, pageable);
         verify(dogRepository, never()).findAllByDeletedFalse(any());
 
     }

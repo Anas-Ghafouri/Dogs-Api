@@ -27,25 +27,25 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
     public Page<Dog> search(DogFilter filter, boolean includeDeleted, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        CriteriaQuery<Dog> criteriaQuery = criteriaBuilder.createQuery(Dog.class);
-        Root<Dog> root = criteriaQuery.from(Dog.class);
+        CriteriaQuery<Dog> mainQuery = criteriaBuilder.createQuery(Dog.class);
+        Root<Dog> root = mainQuery.from(Dog.class);
+        mainQuery.select(root);
 
         var predicates = buildPredicates(filter, includeDeleted, criteriaBuilder, root);
-        criteriaQuery.where(predicates.toArray(Predicate[]::new));
+        mainQuery.where(predicates.toArray(Predicate[]::new));
 
-        applySorting(pageable, criteriaBuilder, criteriaQuery, root);
-
-        TypedQuery<Dog> typedQuery = entityManager.createQuery(criteriaQuery);
+        TypedQuery<Dog> typedQuery = entityManager.createQuery(mainQuery);
         typedQuery.setFirstResult((int) pageable.getOffset());
         typedQuery.setMaxResults(pageable.getSize());
         var results = typedQuery.getResultList();
 
-        CriteriaQuery<Long> criteriaCountQuery = criteriaBuilder.createQuery(Long.class);
-        Root<Dog> countRoot = criteriaCountQuery.from(Dog.class);
-        criteriaCountQuery.select(criteriaBuilder.count(countRoot));
+        // Separate count query required to calculate total results for pagination
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Dog> countRoot = countQuery.from(Dog.class);
+        countQuery.select(criteriaBuilder.count(countRoot));
         var countPredicates = buildPredicates(filter, includeDeleted, criteriaBuilder, countRoot);
-        criteriaCountQuery.where(countPredicates.toArray(Predicate[]::new));
-        Long total = entityManager.createQuery(criteriaCountQuery).getSingleResult();
+        countQuery.where(countPredicates.toArray(Predicate[]::new));
+        Long total = entityManager.createQuery(countQuery).getSingleResult();
 
         return Page.of(results, pageable, total);
     }
@@ -82,28 +82,12 @@ public class DogSearchRepositoryImpl implements DogSearchRepository {
             return;
         }
 
-        dogFilter.stringFilters().forEach((key, value) -> {
+        // Apply dynamic string filters defined in DogFilter
+        dogFilter.filters().forEach((key, value) -> {
             if (value == null || value.trim().isEmpty()) {
                 return;
             }
-            predicates.add(dogsLike(cb, root.get(key), value));
+            predicates.add(dogsLike(cb, root.get(key.getEntityField()), value));
         });
-    }
-
-    private void applySorting(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<Dog> cq, Root<Dog> root) {
-        var sort = pageable.getSort();
-
-        if (sort == null || sort.getOrderBy().isEmpty()) {
-            return;
-        }
-
-        var orders = new ArrayList<Order>();
-
-        sort.getOrderBy().forEach(order -> {
-            Path<Object> path = root.get(order.getProperty());
-            orders.add(order.isAscending() ? cb.asc(path) : cb.desc(path));
-        });
-
-        cq.orderBy(orders);
     }
 }

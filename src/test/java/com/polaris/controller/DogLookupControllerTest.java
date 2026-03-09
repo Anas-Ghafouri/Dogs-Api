@@ -1,6 +1,6 @@
 package com.polaris.controller;
 
-import com.polaris.model.dto.LookupResponse;
+import com.polaris.model.dto.DogLookupResponse;
 import com.polaris.model.entity.DogGender;
 import com.polaris.model.entity.DogLeavingReason;
 import com.polaris.model.entity.DogStatus;
@@ -31,68 +31,68 @@ public class DogLookupControllerTest {
 
     @Test
     void statuses_returnsAllStatuses() {
-        List<LookupResponse> response = getLookupResponses("/statuses");
+        List<DogLookupResponse> response = getLookupResponses("/statuses");
 
         assertNotNull(response);
         assertEquals(DogStatus.values().length, response.size());
 
-        Map<String, LookupResponse> byValueMap = listToMap(response);
+        Map<String, DogLookupResponse> byValueMap = listToMap(response);
 
         for (DogStatus status : DogStatus.values()) {
-            LookupResponse lookupResponse = byValueMap.get(status.name());
-            assertNotNull(lookupResponse);
-            assertEquals(status.getLabel(), lookupResponse.label());
-            assertEquals(status.name(), lookupResponse.value());
+            DogLookupResponse dogLookupResponse = byValueMap.get(status.name());
+            assertNotNull(dogLookupResponse);
+            assertEquals(status.getLabel(), dogLookupResponse.label());
+            assertEquals(status.name(), dogLookupResponse.value());
         }
 
     }
 
     @Test
     void genders_returnsAllGenders() {
-        List<LookupResponse> response = getLookupResponses("/genders");
+        List<DogLookupResponse> response = getLookupResponses("/genders");
 
         assertNotNull(response);
         assertEquals(DogGender.values().length, response.size());
 
-        Map<String, LookupResponse> byValueMap = listToMap(response);
+        Map<String, DogLookupResponse> byValueMap = listToMap(response);
 
         for (DogGender gender : DogGender.values()) {
-            LookupResponse lookupResponse = byValueMap.get(gender.name());
-            assertNotNull(lookupResponse);
-            assertEquals(gender.getLabel(), lookupResponse.label());
-            assertEquals(gender.name(), lookupResponse.value());
+            DogLookupResponse dogLookupResponse = byValueMap.get(gender.name());
+            assertNotNull(dogLookupResponse);
+            assertEquals(gender.getLabel(), dogLookupResponse.label());
+            assertEquals(gender.name(), dogLookupResponse.value());
         }
 
     }
 
     @Test
     void leavingReasons_returnsAllLeavingReasons() {
-        List<LookupResponse> response = getLookupResponses("/leaving-reasons");
+        List<DogLookupResponse> response = getLookupResponses("/leaving-reasons");
 
         assertNotNull(response);
         assertEquals(DogLeavingReason.values().length, response.size());
 
-        Map<String, LookupResponse> byValueMap = listToMap(response);
+        Map<String, DogLookupResponse> byValueMap = listToMap(response);
 
         for (DogLeavingReason leavingReason : DogLeavingReason.values()) {
-            LookupResponse lookupResponse = byValueMap.get(leavingReason.name());
-            assertNotNull(lookupResponse);
-            assertEquals(leavingReason.getLabel(), lookupResponse.label());
-            assertEquals(leavingReason.name(), lookupResponse.value());
+            DogLookupResponse dogLookupResponse = byValueMap.get(leavingReason.name());
+            assertNotNull(dogLookupResponse);
+            assertEquals(leavingReason.getLabel(), dogLookupResponse.label());
+            assertEquals(leavingReason.name(), dogLookupResponse.value());
         }
 
     }
 
-    private List<LookupResponse> getLookupResponses(String string) {
+    private List<DogLookupResponse> getLookupResponses(String string) {
         return client.toBlocking().retrieve(
                 HttpRequest.GET(BASE_URL + string),
-                Argument.listOf(LookupResponse.class)
+                Argument.listOf(DogLookupResponse.class)
         );
     }
 
-    private static Map<String, LookupResponse> listToMap(List<LookupResponse> response) {
+    private static Map<String, DogLookupResponse> listToMap(List<DogLookupResponse> response) {
         return response.stream()
-                .collect(Collectors.toMap(LookupResponse::value, Function.identity()));
+                .collect(Collectors.toMap(DogLookupResponse::value, Function.identity()));
     }
 
 

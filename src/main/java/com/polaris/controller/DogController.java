@@ -51,7 +51,7 @@ public class DogController {
         return dogMapper.entityToResponse(dogService.getActiveDog(id));
     }
 
-    @Post()
+    @Post
     public HttpResponse<DogResponse> createDog(@Body @Valid DogRequest request) {
 
         var created = dogService.createDog(request);

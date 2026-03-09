@@ -1,59 +1,55 @@
 package com.polaris.model.dto;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.polaris.exception.InvalidFilterException;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public record DogFilter(
-        Map<String, String> stringFilters
+        Map<DogQueryField, String> filters
 ) {
 
-    private static final Set<String> FILTERABLE_STRING_FIELDS = Set.of(
-            "name",
-            "breed",
-            "supplier"
-    );
+    public DogFilter {
+        filters = filters == null ? Map.of() : Map.copyOf(filters);
+    }
 
     public static DogFilter from(String rawFilter) {
-        if (rawFilter == null || rawFilter.isEmpty()) {
-            return null;
+        if (rawFilter == null || rawFilter.isBlank()) {
+            return new DogFilter(Map.of());
         }
 
-        var parsedFilter = parseFilter(rawFilter);
-        var authorisedFilters = authoriseFilters(parsedFilter);
+        HashMap<DogQueryField, String> parsedMap = new HashMap<>();
 
-        return authorisedFilters.isEmpty() ? null : new DogFilter(authorisedFilters);
-    }
+        for (String rawEntry : rawFilter.split(",")) {
+            String entry = rawEntry.trim();
 
-    private static Map<String, String> parseFilter(String rawFilter) {
-
-        return Arrays.stream(rawFilter.split(","))
-                .map(String::trim)
-                .map(str -> str.split(":", 2))
-                .filter(entry -> entry.length == 2)
-                .collect(Collectors.toMap(
-                        entry -> entry[0].trim().toLowerCase(),
-                        entry -> entry[1].trim(),
-                        (a,b) -> b
-                ));
-
-    }
-
-    private static Map<String, String> authoriseFilters(Map<String, String> parsedFilters) {
-        Map<String, String> authorisedFilters = new HashMap<>();
-
-        parsedFilters.forEach((key, value) -> {
-            if (value != null && !value.isBlank() && FILTERABLE_STRING_FIELDS.contains(key)) {
-                authorisedFilters.put(key, value.trim());
+            String[] parts = entry.split(":", 2);
+            if (parts.length != 2) {
+                throw new InvalidFilterException(
+                        "Invalid filter format '%s'. Expected field:value".formatted(entry)
+                );
             }
-        });
-        return authorisedFilters;
+
+            String fieldPart = parts[0].trim().toLowerCase(Locale.ROOT);
+            String valuePart = parts[1].trim();
+
+            if (valuePart.isBlank()) {
+                throw new InvalidFilterException(
+                        "Invalid filter format '%s'. Filter value must not be blank.".formatted(entry)
+                );
+            }
+
+            DogQueryField dogQueryField = DogQueryField.from(fieldPart)
+                    .orElseThrow(() -> new InvalidFilterException(
+                            "Invalid filter field '%s'.".formatted(fieldPart)
+                    ));
+
+            parsedMap.put(dogQueryField, valuePart);
+        }
+        return new DogFilter(parsedMap);
     }
 
     public boolean hasNoFilters() {
-        if (stringFilters == null || stringFilters.isEmpty()) return true;
-        return stringFilters.values().stream().allMatch(v -> v == null || v.isBlank());
+        return filters.isEmpty();
     }
 }
